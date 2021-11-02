@@ -137,11 +137,6 @@ class WebDriver:
             if self.__driver_path is not None and self.__remote_url is not None:
                 msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
                 raise WebDriverError(msg)
-            # 브라우저 윈도우 사이즈를 설정
-            if self.__maximize_window:
-                self.__driver.maximize_window()
-            # Implicitly Wait
-            self.__driver.implicitly_wait(self.__implicitly_wait)
         except Exception as e:
             msg = 'WebDriver exception occured in set_config(). Message: %s' % str(e)
             raise WebDriverError(msg)
@@ -223,6 +218,7 @@ class WebDriver:
         try:
             if self.__driver is not None:
                 self.__driver.quit()
+                self.__driver = None
         except Exception as e:
             msg = 'WebDriver exception occured in quit(). Message: %s' % str(e)
             raise WebDriverError(msg)
