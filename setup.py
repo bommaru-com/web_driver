@@ -11,11 +11,11 @@ setup(
     description='Library for using selenium web driver',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/jinland-bommaru/web_driver.git',
+    url='https://github.com/bommaru-com/web_driver.git',
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3.8",
-        "License :: OSI Approved :: MIT License",
+        "License :: Selenium Approved :: Bommaru License",
         "Operating System :: OS Independent",
     ],
     python_requires='==3.8.10',
