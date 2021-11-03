@@ -28,7 +28,10 @@ selenium webdriver를 사용하기 위한 라이브러리
         )
                 :
         # chrome 접속
-        browser.connect()
+        driver = browser.connect()
+        if driver is not None:
+            browser.get(url)
+                :
                 :
         # chrome 접속 해제
         browser.disconnect() 또는 browser.quit()
@@ -41,8 +44,12 @@ selenium webdriver를 사용하기 위한 라이브러리
             session_url="<ip-address or dns>:4444"
         )
                 :
+
         # selenium grid hub 접속
-        browser.connect()
+        driver = browser.connect()
+        if driver is not None:
+            browser.get(url)
+                :
                 :
         # selenium grid 접속 해제
         browser.disconnect() 또는 browser.quit()

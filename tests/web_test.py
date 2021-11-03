@@ -9,11 +9,16 @@ def main(connect_type):
         if connect_type == 'chromedriver':
             browser = WebDriver(driver_path='./chromedriver')
         elif connect_type == 'remote':
-            browser = WebDriver(remote_url='http://220.86.210.44:4444')
-        driver = browser.connect()
-        driver.get('http://www.naver.com')
-        print('web site title is %s' % driver.title)
-        browser.quit()
+            browser = WebDriver(remote_url='http://localhost:4444')
+        for idx in range(10):
+            try:
+                driver = browser.connect()
+                if driver is not None:
+                    driver.get('http://www.naver.com')
+                    print('idx %s web site title is %s' % (idx, driver.title))
+                    browser.quit()
+            except WebDriverError:
+                continue
     except Exception as e:
         print(type(e), str(e))
         if browser is not None:
