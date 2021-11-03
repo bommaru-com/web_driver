@@ -53,7 +53,7 @@ class WebDriver:
                 raise WebDriverError(msg)
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
-            if not self.__visible:
+            if not self.__visible and self.__driver_path is not None:
                 # Run in headless mode, i.e., without a UI or display server dependencies.
                 self.__options.add_argument('--headless')
                 # Disables sandbox mode for all processes
@@ -129,7 +129,7 @@ class WebDriver:
             self.__user_agent = f"Mozilla/5.0 (Windows NT 10.0; Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{self.__version} Safari/537.36"
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
-            if not self.__visible:
+            if not self.__visible and self.__driver_path is not None:
                 # Run in headless mode, i.e., without a UI or display server dependencies.
                 self.__options.add_argument('--headless')
                 # Disables sandbox mode for all processes

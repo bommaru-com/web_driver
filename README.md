@@ -56,6 +56,9 @@ selenium webdriver를 사용하기 위한 라이브러리
     [참고]
     driver = browser.get_driver()를 통해서 driver를 획득했을 경우 driver는 selenium의 webdriver의 모든 메소드를 사용할 수 있다.
 
+    [주의]
+    web driver 종료 시 반드시 browser.quit() 또는 browser.disconnect()를 해야한다. 만일 connect()를 통해 할당된 변수값 즉 driver.quit()으로 종료할 경우 cloass에서 종료에 대한 정보를 처리할 수 없어 오류를 발생한다.
+
 ```
 
 ------------------
@@ -63,22 +66,23 @@ selenium webdriver를 사용하기 위한 라이브러리
 ```
     # remote_url
         - 형식: string
-        - 설명: selenium grid hub의 주소를 표시한다. 예) WebDriver(remote_url='http://localhost:4444')
+        - 설명: selenium grid 사용 시 grid hub의 주소를 표시한다. 예) WebDriver(remote_url='http://localhost:4444')
     # driver_path
         - 형식: string
         - 설명: chromedriver의 경로를 표시한다. 예) WebDriver(driver_path='./chromedriver')
     # version
         - 형식: string
-        - 설명: chrome 버전을 입력한다.
+        - 설명: chrome 버전을 입력한다. 예) 95.0
+        - 참고: 버전 확인 방법은 chrome -> 옵션 -> 도움말 -> 크롬정보 또는 grid 사용 시 selenium grid Overview 참조
     # visible
         - 형식: Boolean
         - 설명: 브라우저를 화면에 보이게 실행할 것인가 선택. 기본값은 False
     # implicitly_wait
         - 형식: int
-        - 설명: selenium driver가 명시적으로 기다리는 시간. 단위는 초
+        - 설명: selenium driver가 명시적으로 기다리는 시간. 단위는 초, 기본값은 1
     # __explicitly_wait
         - 형식: int
-        - 설명: selenium driver가 묵시적으로 기다리는 시간. 단위는 초
+        - 설명: selenium driver가 묵시적으로 기다리는 시간. 단위는 초, 기본값은 10
     # maximize_window
         - 형식: Boolean
         - 설명: 브라우저 윈도우를 최대 사이즈로 할 것인가 선택. 기본값은 False
@@ -108,8 +112,14 @@ selenium webdriver를 사용하기 위한 라이브러리
         - chrome 버전 확인 방법
             $ google-chrome --version
     # chromedriver download
-        $ wget https://chromedriver.storage.googleapis.com/<chromedriver version>/chromedriver_linux64.zip
-        $ unzip chromedriver_linux64.zip
+        - Linux일 경우
+            $ wget https://chromedriver.storage.googleapis.com/"chromedriver version"/chromedriver_linux64.zip
+            $ unzip chromedriver_linux64.zip
+        - Windows 또는 Mac 사용 시
+          다음 사이트(https://chromedriver.chromium.org/downloads)에서 OS에 맞는 드라이버를 다운로드 후 사용한다.
     # Mac os 사용 시
-        $ xattr -d com.apple.quarantine chromedriver
+        - 해당 시스템의 CPU 칩셋의 종류(mac64 또는 mac64_m1)에 따라 chromedriver를 구분해서 다운로는 해야한다.
+        - "개발자를 확인할 수 없기 때문에 'chromedriver'을(를) 열 수 없습니다." 오류 메시지 발생 시
+            $ cd "chromedriver path"
+            $ xattr -d com.apple.quarantine chromedriver
 ```
