@@ -44,7 +44,7 @@ class WebDriver:
             self.__remote_url = kwargs.get('remote_url', None)
             self.__driver_path = kwargs.get('driver_path', None)
             self.__implicitly_wait = kwargs.get('implicitly_wait', 1)
-            self.__explicitly_wait = kwargs.get('explicitly_wait', 3)
+            self.__explicitly_wait = kwargs.get('explicitly_wait', 10)
             self.__maximize_window = kwargs.get('maximize_window', True)
             self.__user_agent = f"Mozilla/5.0 (Windows NT 10.0; Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{self.__version} Safari/537.36"
             # set chromedriver path or remote_url
@@ -54,18 +54,31 @@ class WebDriver:
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
             if not self.__visible:
+                # Run in headless mode, i.e., without a UI or display server dependencies.
                 self.__options.add_argument('--headless')
+                # Disables sandbox mode for all processes
                 self.__options.add_argument("--no-sandbox")
+                # Disables GPU hardware acceleration.
                 self.__options.add_argument("--disable-gpu")
             self.__options.add_argument(f'user-agent={self.__user_agent}')
+            # The /dev/shm partition is too small in certain VM environments,
+            # causing Chrome to fail or crash (see http://crbug.com/715363).
+            # Use this flag to work-around this issue (a temporary directory will always be used to create
+            # anonymous shared memory files).
             self.__options.add_argument("--disable-dev-shm-usage")
-            self.__options.add_argument('----window-size=1920,1080')
+            # set windows size to the specified values
+            self.__options.add_argument('--window-size=1920,1080')
+            # Disable crash reporter for headless. It is enabled by default in official builds.
             self.__options.add_argument('--disable-crash-reporter')
+            # Disables the in-process stack traces.
             self.__options.add_argument('--disable-in-process-stack-traces')
+            # Quite clear what it does
             self.__options.add_argument('--disable-extensions')
+            # logging should be already disabled in production builds, but better to double disable.
             self.__options.add_argument('--disable-logging')
+            # Sets the minimum log level. Valid values are from 0 to 3:
+            # INFO = 0, WARNING = 1, LOG_ERROR = 2, LOG_FATAL = 3
             self.__options.add_argument('--log-level=3')
-            self.__options.add_argument('--output=/dev/null')
         except Exception as e:
             msg = 'WebDriver exception occured in __init__(). Message: %s' % str(e)
             raise WebDriverError(msg)
@@ -111,24 +124,37 @@ class WebDriver:
             self.__remote_url = kwargs.get('remote_url', None)
             self.__driver_path = kwargs.get('driver_path', None)
             self.__implicitly_wait = kwargs.get('implicitly_wait', 1)
-            self.__explicitly_wait = kwargs.get('explicitly_wait', 3)
+            self.__explicitly_wait = kwargs.get('explicitly_wait', 10)
             self.__maximize_window = kwargs.get('maximize_window', True)
             self.__user_agent = f"Mozilla/5.0 (Windows NT 10.0; Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{self.__version} Safari/537.36"
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
             if not self.__visible:
+                # Run in headless mode, i.e., without a UI or display server dependencies.
                 self.__options.add_argument('--headless')
+                # Disables sandbox mode for all processes
                 self.__options.add_argument("--no-sandbox")
+                # Disables GPU hardware acceleration.
                 self.__options.add_argument("--disable-gpu")
             self.__options.add_argument(f'user-agent={self.__user_agent}')
+            # The /dev/shm partition is too small in certain VM environments,
+            # causing Chrome to fail or crash (see http://crbug.com/715363).
+            # Use this flag to work-around this issue (a temporary directory will always be used to create
+            # anonymous shared memory files).
             self.__options.add_argument("--disable-dev-shm-usage")
-            self.__options.add_argument('----window-size=1920,1080')
+            # set windows size to the specified values
+            self.__options.add_argument('--window-size=1920,1080')
+            # Disable crash reporter for headless. It is enabled by default in official builds.
             self.__options.add_argument('--disable-crash-reporter')
+            # Disables the in-process stack traces.
             self.__options.add_argument('--disable-in-process-stack-traces')
+            # Quite clear what it does
             self.__options.add_argument('--disable-extensions')
+            # logging should be already disabled in production builds, but better to double disable.
             self.__options.add_argument('--disable-logging')
+            # Sets the minimum log level. Valid values are from 0 to 3:
+            # INFO = 0, WARNING = 1, LOG_ERROR = 2, LOG_FATAL = 3
             self.__options.add_argument('--log-level=3')
-            self.__options.add_argument('--output=/dev/null')
             # set chromedriver path or remote_url
             if self.__driver_path is not None and self.__remote_url is not None:
                 msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
