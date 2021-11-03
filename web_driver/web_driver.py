@@ -58,16 +58,14 @@ class WebDriver:
                 self.__options.add_argument("--no-sandbox")
                 self.__options.add_argument("--disable-gpu")
             self.__options.add_argument(f'user-agent={self.__user_agent}')
-            self.__options.add_argument('--ignore-certificate-errors')
-            self.__options.add_argument('--allow-running-insecure-content')
-            self.__options.add_argument('--disable-extensions')
-            self.__options.add_argument("--proxy-server='direct://*'")
-            self.__options.add_argument('--proxy-bypass-list=*')
-            self.__options.add_argument('--start-maximized')
-            self.__options.add_argument("--single-process")
             self.__options.add_argument("--disable-dev-shm-usage")
-            self.__options.add_argument("--window-size=1920,1080")
-            self.__options.add_argument('d--log-level=1')
+            self.__options.add_argument('----window-size=1920,1080')
+            self.__options.add_argument('--disable-crash-reporter')
+            self.__options.add_argument('--disable-in-process-stack-traces')
+            self.__options.add_argument('--disable-extensions')
+            self.__options.add_argument('--disable-logging')
+            self.__options.add_argument('--log-level=3')
+            self.__options.add_argument('--output=/dev/null')
         except Exception as e:
             msg = 'WebDriver exception occured in __init__(). Message: %s' % str(e)
             raise WebDriverError(msg)
@@ -123,16 +121,14 @@ class WebDriver:
                 self.__options.add_argument("--no-sandbox")
                 self.__options.add_argument("--disable-gpu")
             self.__options.add_argument(f'user-agent={self.__user_agent}')
-            self.__options.add_argument('--ignore-certificate-errors')
-            self.__options.add_argument('--allow-running-insecure-content')
-            self.__options.add_argument('--disable-extensions')
-            self.__options.add_argument("--proxy-server='direct://*'")
-            self.__options.add_argument('--proxy-bypass-list=*')
-            self.__options.add_argument('--start-maximized')
-            self.__options.add_argument("--single-process")
             self.__options.add_argument("--disable-dev-shm-usage")
-            self.__options.add_argument("--window-size=1920,1080")
-            self.__options.add_argument('d--log-level=1')
+            self.__options.add_argument('----window-size=1920,1080')
+            self.__options.add_argument('--disable-crash-reporter')
+            self.__options.add_argument('--disable-in-process-stack-traces')
+            self.__options.add_argument('--disable-extensions')
+            self.__options.add_argument('--disable-logging')
+            self.__options.add_argument('--log-level=3')
+            self.__options.add_argument('--output=/dev/null')
             # set chromedriver path or remote_url
             if self.__driver_path is not None and self.__remote_url is not None:
                 msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
@@ -150,30 +146,34 @@ class WebDriver:
     # -----------------------------------------------
     def connect(self):
         try:
-            if self.__driver is None:
-                if self.__remote_url is not None:
-                    # grid 접속을 위한 web driver remote 설정
-                    self.__driver = webdriver.Remote(
-                            command_executor=self.__remote_url,
-                            # selenium version 4에서는 권장하지 않는다.
-                            # desired_capabilities=DesiredCapabilities.CHROME,
-                            options=self.__options)
-                elif self.__driver_path is not None:
-                    self.__driver = webdriver.Chrome(
-                             executable_path=self.__driver_path,
-                            # selenium version 4에서는 권장하지 않는다.
-                            # desired_capabilities=DesiredCapabilities.CHROME,
-                             options=self.__options)
-                else:
-                    msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
-                    raise WebDriverError(msg)
+            if self.__remote_url is not None:
+                # grid 접속을 위한 web driver remote 설정
+                self.__driver = webdriver.Remote(
+                        command_executor=self.__remote_url,
+                        # selenium version 4에서는 권장하지 않는다.
+                        # desired_capabilities=DesiredCapabilities.CHROME,
+                        options=self.__options)
+            elif self.__driver_path is not None:
+                self.__driver = webdriver.Chrome(
+                         executable_path=self.__driver_path,
+                        # selenium version 4에서는 권장하지 않는다.
+                        # desired_capabilities=DesiredCapabilities.CHROME,
+                         options=self.__options)
+            else:
+                msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
+                raise WebDriverError(msg)
+            if self.__driver is not None:
                 # 브라우저 윈도우 사이즈를 설정
                 if self.__maximize_window:
                     self.__driver.maximize_window()
                 # Implicitly Wait
                 self.__driver.implicitly_wait(self.__implicitly_wait)
-            return self.__driver
+                # return web driver
+                return self.__driver
+            else:
+                return None
         except Exception as e:
+            self.__driver = None
             msg = 'WebDriver exception occured in connect(). Message: %s' % str(e)
             raise WebDriverError(msg)
 
@@ -340,12 +340,13 @@ class WebDriver:
     # -----------------------------------------------
     def page_end(self, **kwargs):
         try:
+            count = kwargs.get('count', 3)
             wait_time = kwargs.get('wait_time', 0.5)
             # 크롤링을 위해 화면 맨 아래까지 스크롤 내리기
             while True:
                 # 현재 화면의 길이를 리턴 받아 last_height에 넣음
                 last_height = self.__driver.execute_script('return document.documentElement.scrollHeight')
-                for i in range(3):
+                for i in range(count):
                     # body 본문에 END키를 입력(스크롤내림)
                     element = WebDriverWait(self.__driver, self.__explicitly_wait).until(
                                 EC.presence_of_element_located((By.TAG_NAME, 'body')))
