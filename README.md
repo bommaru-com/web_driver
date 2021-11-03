@@ -5,9 +5,12 @@ selenium webdriver를 사용하기 위한 라이브러리
         - python 3.8.10 이상
         - selenium 4.0.0 이상
     * 브라우저:
-        - Chrome
-        - Firefox
-        - Edge
+        - selenium grid 사용 시
+          . Chrome
+          . Firefox
+          . Edge
+        - chromedriver 사용 시
+          . Chrome
 
 ------------------
 ### 사용법
