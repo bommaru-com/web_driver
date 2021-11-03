@@ -105,6 +105,8 @@ selenium webdriver를 사용하기 위한 라이브러리
       드라이브 설정을 다시 하고자 할 때 사용. arg는 클라스 선언 시 ARG와 동일
     # connect()
       grid hub 또는 chrome에 접속하고자 할 때 사용. 리턴값은 selenium webdriver object
+      [주의]
+      반드시 return 값이 None인지를 체크해야 한다.
     # disconnect()
       grid hub 또는 chrome으로 부터 접속을 해제할 때 사용.
     # get(url)
