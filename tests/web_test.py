@@ -7,9 +7,9 @@ def main(connect_type):
         driver = None
         browser = None
         if connect_type == 'chromedriver':
-            browser = WebDriver(driver_path='./chromedriver')
-        elif connect_type == 'remote':
-            browser = WebDriver(remote_url='http://localhost:4444')
+            browser = WebDriver(connect_type, driver_path='./chromedriver')
+        elif connect_type == 'grid-hub':
+            browser = WebDriver(connect_type, remote_url='http://localhost:4444')
         for idx in range(10):
             try:
                 driver = browser.connect()

@@ -36,8 +36,9 @@ class WebDriverError(Exception):
 #           broswer.quit()
 # ================================================================
 class WebDriver:
-    def __init__(self, **kwargs):
+    def __init__(self,connect_type, **kwargs):
         try:
+            self.__type = connect_type
             self.__driver = None
             self.__version = kwargs.get('version', '89.0.4389.23')
             self.__visible = kwargs.get('visible', False)
@@ -47,9 +48,15 @@ class WebDriver:
             self.__explicitly_wait = kwargs.get('explicitly_wait', 10)
             self.__maximize_window = kwargs.get('maximize_window', True)
             self.__user_agent = f"Mozilla/5.0 (Windows NT 10.0; Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{self.__version} Safari/537.36"
-            # set chromedriver path or remote_url
-            if self.__driver_path is not None and self.__remote_url is not None:
-                msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
+            # 접속방식 체크
+            if self.__type == 'grid-hub' and self.__remote_url is None:
+                msg = 'If the connection method is grid-hub, the grid-hub address is required.'
+                raise WebDriverError(msg)
+            if self.__type == 'chromedriver' and self.__driver_path is None:
+                msg = 'If the connection method is chrome, the path to chromedriver is required.'
+                raise WebDriverError(msg)
+            if self.__type == 'geckodriver' and self.__driver_path is None:
+                msg = 'If the connection method is firefox, the path to geckodriver is required.'
                 raise WebDriverError(msg)
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
@@ -116,8 +123,9 @@ class WebDriver:
     # [설명]
     #   WebDriver의 환경설정
     # -----------------------------------------------
-    def set_config(self, **kwargs):
+    def set_config(self, connect_type, **kwargs):
         try:
+            self.__type = connect_type
             self.__driver = None
             self.__version = kwargs.get('version', '89.0.4389.23')
             self.__visible = kwargs.get('visible', False)
@@ -127,6 +135,16 @@ class WebDriver:
             self.__explicitly_wait = kwargs.get('explicitly_wait', 10)
             self.__maximize_window = kwargs.get('maximize_window', True)
             self.__user_agent = f"Mozilla/5.0 (Windows NT 10.0; Win64;x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{self.__version} Safari/537.36"
+            # 접속방식 체크
+            if self.__type == 'grid-hub' and self.__remote_url is None:
+                msg = 'If the connection method is grid-hub, the grid-hub address is required.'
+                raise WebDriverError(msg)
+            if self.__type == 'chromedriver' and self.__driver_path is None:
+                msg = 'If the connection method is chrome, the path to chromedriver is required.'
+                raise WebDriverError(msg)
+            if self.__type == 'geckodriver' and self.__driver_path is None:
+                msg = 'If the connection method is firefox, the path to geckodriver is required.'
+                raise WebDriverError(msg)
             # chrome 옵션 설정
             self.__options = webdriver.ChromeOptions()
             if not self.__visible and self.__driver_path is not None:
@@ -172,21 +190,27 @@ class WebDriver:
     # -----------------------------------------------
     def connect(self):
         try:
-            if self.__remote_url is not None:
+            if self.__type == 'grid-hub':
                 # grid 접속을 위한 web driver remote 설정
                 self.__driver = webdriver.Remote(
                         command_executor=self.__remote_url,
                         # selenium version 4에서는 권장하지 않는다.
                         # desired_capabilities=DesiredCapabilities.CHROME,
                         options=self.__options)
-            elif self.__driver_path is not None:
+            elif self.__type == 'chromedriver':
                 self.__driver = webdriver.Chrome(
                          executable_path=self.__driver_path,
                         # selenium version 4에서는 권장하지 않는다.
                         # desired_capabilities=DesiredCapabilities.CHROME,
                          options=self.__options)
+            elif self.__type == 'geckodriver':
+                self.__driver = webdriver.Firefox(
+                         executable_path=self.__driver_path,
+                        # selenium version 4에서는 권장하지 않는다.
+                        # desired_capabilities=DesiredCapabilities.CHROME,
+                         options=self.__options)
             else:
-                msg = 'There must be only one "driver_path" or "remote_url" value among the transfer arguments.'
+                msg = 'A value for which the connection method is not defined. Please check again.'
                 raise WebDriverError(msg)
             if self.__driver is not None:
                 # 브라우저 윈도우 사이즈를 설정

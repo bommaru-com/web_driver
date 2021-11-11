@@ -11,6 +11,7 @@ selenium webdriver를 사용하기 위한 라이브러리
           . Edge
         - chromedriver 사용 시
           . Chrome
+          . Firefox
 
 ------------------
 ### 사용법
@@ -23,6 +24,7 @@ selenium webdriver를 사용하기 위한 라이브러리
                 :
                 :
         browser = WebDriver(
+            "connect_type",
             driver_path="chromedriver "./driver/chromedriver",
                 :
         )
@@ -41,6 +43,7 @@ selenium webdriver를 사용하기 위한 라이브러리
                 :
                 :
         browser = WebDriver(
+            "connect_type",
             session_url="<ip-address or dns>:4444"
         )
                 :
@@ -74,6 +77,9 @@ selenium webdriver를 사용하기 위한 라이브러리
 ------------------
 ### ARG 정의
 ```
+    # connect_type
+        - 형식: string
+        - 설명: 접속방식을 grid-hub, chromedriver, geckodriver를 선택
     # remote_url
         - 형식: string
         - 설명: selenium grid 사용 시 grid hub의 주소를 표시한다. 예) WebDriver(remote_url='http://localhost:4444')
