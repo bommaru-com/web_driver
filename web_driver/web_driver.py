@@ -44,6 +44,7 @@ class WebDriver:
             self.__visible = kwargs.get('visible', False)
             self.__remote_url = kwargs.get('remote_url', None)
             self.__driver_path = kwargs.get('driver_path', None)
+            self.__page_load_time_out = kwargs.get('page_load_time_out', 10)
             self.__implicitly_wait = kwargs.get('implicitly_wait', 1)
             self.__explicitly_wait = kwargs.get('explicitly_wait', 10)
             self.__maximize_window = kwargs.get('maximize_window', True)
@@ -129,6 +130,7 @@ class WebDriver:
             self.__driver = None
             self.__version = kwargs.get('version', '89.0.4389.23')
             self.__visible = kwargs.get('visible', False)
+            self.__page_load_time_out = kwargs.get('page_load_time_out', 10)
             self.__remote_url = kwargs.get('remote_url', None)
             self.__driver_path = kwargs.get('driver_path', None)
             self.__implicitly_wait = kwargs.get('implicitly_wait', 1)
@@ -213,6 +215,8 @@ class WebDriver:
                 msg = 'A value for which the connection method is not defined. Please check again.'
                 raise WebDriverError(msg)
             if self.__driver is not None:
+                # page load time out 설정
+                self.__driver.set_page_load_timeout(self.__page_load_time_out)
                 # 브라우저 윈도우 사이즈를 설정
                 if self.__maximize_window:
                     self.__driver.maximize_window()
