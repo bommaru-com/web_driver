@@ -18,7 +18,7 @@ setup(
         "License :: Selenium Approved :: Bommaru License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.8.10',
+    python_requires='>=3.8.9',
     install_requires=[
         'beautifulsoup4 >= 4.10.0',
         'selenium >= 4.0.0',
